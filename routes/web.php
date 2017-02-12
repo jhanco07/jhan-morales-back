@@ -11,6 +11,9 @@
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
-});
+});*/
+
+Route::get("/","StartController@index");
+Route::post("/add","StartController@add");
