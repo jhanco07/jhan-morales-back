@@ -18,9 +18,10 @@ class StartController extends Controller
         return view("start.index");
     }
 
-    public function add(){
-        $matrix=  Matrix::getInstance();
-        $matrix->setMatrix(3);
+    public function initMatrix(Request $request){
+        $matrix=  new Matrix();
+        $matrix->setMatrix($request->n);
         print_r($matrix->getMatrix());
+        
     }
 }

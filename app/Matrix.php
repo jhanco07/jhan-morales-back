@@ -7,20 +7,10 @@ use App\Data;
 class Matrix extends Data {
 
     public $matrix = array();
-    private static $instance;
     public $valores;
 
-    private function __construct() {
-        
-    }
 
-    public static function getInstance() {
-        if (!self::$instance instanceof self) {
-            self::$instance = new self;
-        }
-        return self::$instance;
-    }
-
+ 
     public function setMatrix($size) {
         for ($i = 1; $i <= $size; $i++) {
             for ($j = 1; $j <= $size; $j++) {

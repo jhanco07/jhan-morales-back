@@ -16,4 +16,4 @@
 });*/
 
 Route::get("/","StartController@index");
-Route::post("/add","StartController@add");
+Route::post("/initMatrix","StartController@initMatrix");
