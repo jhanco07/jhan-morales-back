@@ -50,7 +50,8 @@
             </select>
             Valor para la consulta:            
             <input type="text" id="valueQuery" class="form-control">
-            <br> <button id="btnSendData" class="btn btn-primary" onclick="sendQuery()" disabled > Enviar </button>
+            <span id="errorValueQuery"></span>
+            <br> <button id="btnSendData" class="btn btn-primary" onclick="validacionesInput()" disabled > Enviar </button>
         </div>
     </div>        
 
@@ -195,6 +196,32 @@
     
     function desactivarBoton(selector){
         selector.attr("disabled", "disabled");
+    }
+    
+    function validacionesInput(){
+        var input= $("#valueQuery").val();
+        var n= $("#n").val();
+        var datos= input.split(" ");
+        var typeQuery= $("#typeQuery").val();
+        
+        
+        if((typeQuery == 1 ) && ((datos[0]< 1 || datos[0] > datos[3] || datos[3] > n)  ||
+                 (datos[1] < 1 || datos[1] > datos[4] || datos[4] > n)  ||
+                 (datos[2]< 1 || datos[2] > datos[5] || datos[5] > n))) {                  
+                $("#errorValueQuery").html("Error valores fuera de rango");
+                return false;
+        } 
+        
+        else if((typeQuery== 2) && ( (datos[0] < 1 || datos[0] > n )  || (datos[1] < 1 || datos[1] > n )
+                || (datos[2] < 1 || datos[2]> n ) )){
+             $("#errorValueQuery").html("Error valores fuera de rango");
+             return false;
+            
+        }else{
+              $("#errorValueQuery").html("");
+              sendQuery();
+        }
+        
     }
 </script>
 
