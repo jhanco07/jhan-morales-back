@@ -27,7 +27,7 @@
 <div class="row" id="bloq">
     <div class="col-md-4" id="controles">
         <div class="col-md-12">
-            Test case number: <span id="numberTest"></span>
+            Numero de test: <span id="numberTest"></span>
         </div>
         <div class="col-md-12">
             N: <input type="number" id="n" class="form-control">
@@ -38,22 +38,43 @@
             <span id="errorM"></span>
         </div>          
         <div class="col-md-12">
-            <br> <button id="initMatrix" class="btn btn-primary" onclick="initMatrix()">Init Matrix</button>
+            <br> <button id="initMatrix" class="btn btn-primary" onclick="initMatrix()">Iniciar Matriz</button>
         </div>
 
         <div class="col-md-12" id="bloqQueries">
-         QUERIES:  <select id="" class="form-control">
+            Selecccionar tipo consulta:  
+            <select id="" class="form-control" id="typeQuery">
+                <option value=""></option>
                 <option value="1">Query</option>
                 <option value="2">Update</option>
             </select>
+            Valor para la consulta:            
+            <input type="text" id="valueQuery" class="form-control">
+            <br> <button class="btn btn-primary" onclick="sendQuery()" > Enviar </button>
         </div>
     </div>        
-</div>  
-<div class="col-md-8" id="resultado"></div> 
+
+    <div class="col-md-8" id="resultado">
+        <table  class="table">
+            <thead>
+                <tr>
+                    <th>Numero Test</th>
+                    <th>Resultado consulta</th>
+                </tr>
+            </thead>
+            <tbody id="results">
+                
+            </tbody>
+
+        </table>
+
+    </div> 
 </div>
 
 <script>
 
+   var _token = $('meta[name="csrf-token"]').attr('content');
+   
     $(document).ready(function () {
         $("#bloq").hide();
         $("#numberTest").html("1");
@@ -77,15 +98,14 @@
         }
         $("#errorM").html("");
 
-        var _token = $('meta[name="csrf-token"]').attr('content');
         $.post('{{ url('initMatrix') }}', {
             _token: _token,
             n: n,
             m: m
-        }, function (data) {
-            $("#bloqQueries").show();
+        }, function (data) {            
+            $("#bloqQueries").show();            
+            $("#initMatrix").attr("disabled","disabled");
         });
-
 
     }
 
@@ -109,7 +129,23 @@
             $("#errorTest").html("");
         }
     }
-
+    
+    function sendQuery(){
+        $.post('{{ url('initQuery') }}',{
+             _token: _token,
+             idTest:1,
+            typeQuery: $("#typeQuery").val(),
+            valueQuery: $("#valueQuery").val()
+        }, function(data){
+            if($("#valueQuery").val()== "1"){
+                 $("#results").append("<tr><td>").append(data.idTest)
+                    .append("</td><td>"+ data.valueQuery+"</td></tr>");
+            }else{
+                $("#results").append("<tr><td>").append(data.idTest)
+                    .append("</td><td>"+ data.valueQuery+" "+ data.resultQ +"</td></tr>");
+            }
+       });
+    }
 
 </script>
 

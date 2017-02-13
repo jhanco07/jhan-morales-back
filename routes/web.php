@@ -17,3 +17,4 @@
 
 Route::get("/","StartController@index");
 Route::post("/initMatrix","StartController@initMatrix");
+Route::post("/initQuery","StartController@initQuery");
