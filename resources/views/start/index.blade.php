@@ -75,8 +75,8 @@
 
    var _token = $('meta[name="csrf-token"]').attr('content');
    
-   var iteracion1 = 0;
-   var iteracion2 = 0;
+   var iteracion1 = 1;
+   var iteracion2 = 1;
    
     $(document).ready(function () {
         $("#bloq").hide();
@@ -90,7 +90,7 @@
     });
 
     function initMatrix() {
-        contarIteracionesTest();
+       
         activarBoton($("#btnSendData"));
         var n = $("#n").val();
         if (n.length == 0 || n > 1000 || n < 0) {
@@ -114,6 +114,7 @@
         }, function (data) {            
             $("#bloqQueries").show();            
             $("#initMatrix").attr("disabled","disabled");
+             contarIteracionesTest();
         });
 
     }
@@ -144,7 +145,7 @@
     function sendQuery(){
         $.post('{{ url('initQuery') }}',{
              _token: _token,
-             idTest:1 ,
+             idTest:iteracion2 - 1 ,
              typeQuery: $("#typeQuery").val(),
              valueQuery: $("#valueQuery").val()
         }, function(data){
@@ -158,28 +159,33 @@
     }
     
     function contarIteracionesConsulta(){
-        iteracion1++;
-        if(iteracion1 >= $("#m").val()){
+         iteracion1++;
+        if(iteracion1 > $("#m").val()){
             $("#typeQuery").val("");
             $("#valueQuery").val("");
             desactivarBoton($("#btnSendData"));
             activarBoton($("#initMatrix"));        
             $("#n").val("");
             $("#m").val("");
-            $("#bloqQueries").hide();
+            $("#bloqQueries").hide();  
+            iteracion1=1;
+            return false;
         }
     }
-    function contarIteracionesTest(){
-        if(iteracion2 > $("#test")){
+    function contarIteracionesTest(){        
+         $("#numberTest").html(iteracion2);    
+        if(iteracion2 > $("#test").val() ){
             $("#typeQuery").val("");
             $("#valueQuery").val("");
             desactivarBoton($("#btnSendData"));
-            activarBoton($("#initMatrix"));        
+            desactivarBoton($("#initMatrix"));        
             $("#n").val("");
             $("#m").val("");
             $("#bloqQueries").hide();
-        }          
-        
+            $("#results").html("");
+            activarBoton($("#ok")); 
+            return false;
+        }     
         iteracion2++;
     }
     
