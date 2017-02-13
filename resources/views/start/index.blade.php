@@ -38,19 +38,19 @@
             <span id="errorM"></span>
         </div>          
         <div class="col-md-12">
-            <br> <button id="initMatrix" class="btn btn-primary" onclick="initMatrix()">Iniciar Matriz</button>
+            <br> <button id="initMatrix" class="btn btn-primary" onclick="initMatrix()" disabled >Iniciar Matriz</button>
         </div>
 
         <div class="col-md-12" id="bloqQueries">
             Selecccionar tipo consulta:  
-            <select id="" class="form-control" id="typeQuery">
+            <select  class="form-control" id="typeQuery">
                 <option value=""></option>
                 <option value="1">Query</option>
                 <option value="2">Update</option>
             </select>
             Valor para la consulta:            
             <input type="text" id="valueQuery" class="form-control">
-            <br> <button class="btn btn-primary" onclick="sendQuery()" > Enviar </button>
+            <br> <button id="btnSendData" class="btn btn-primary" onclick="sendQuery()" disabled > Enviar </button>
         </div>
     </div>        
 
@@ -75,14 +75,23 @@
 
    var _token = $('meta[name="csrf-token"]').attr('content');
    
+   var iteracion1 = 0;
+   var iteracion2 = 0;
+   
     $(document).ready(function () {
         $("#bloq").hide();
         $("#numberTest").html("1");
         $("#bloqQueries").hide();
-
+        
+        $("#typeQuery").change(function(){
+            $("#valueQuery").val("");
+        });
+        
     });
 
     function initMatrix() {
+        contarIteracionesTest();
+        activarBoton($("#btnSendData"));
         var n = $("#n").val();
         if (n.length == 0 || n > 1000 || n < 0) {
             $("#errorN").html("N debe ser mayor que 0 y menor que 101");
@@ -109,7 +118,9 @@
 
     }
 
-    function okTest() {
+    function okTest() {        
+        activarBoton($("#initMatrix"));
+        desactivarBoton($("#ok"));
         var test = $("#test").val();
         if (test.length == 0 || test > 50) {
             $("#errorTest").html("Test debe ser mayor que 0 y menor que 51");
@@ -133,20 +144,52 @@
     function sendQuery(){
         $.post('{{ url('initQuery') }}',{
              _token: _token,
-             idTest:1,
-            typeQuery: $("#typeQuery").val(),
-            valueQuery: $("#valueQuery").val()
+             idTest:1 ,
+             typeQuery: $("#typeQuery").val(),
+             valueQuery: $("#valueQuery").val()
         }, function(data){
-            if($("#valueQuery").val()== "1"){
-                 $("#results").append("<tr><td>").append(data.idTest)
-                    .append("</td><td>"+ data.valueQuery+"</td></tr>");
+            if($("#typeQuery").val()== "2"){ 
+                  $("#results").append("<tr><td>"+ data.idTest+ "</td><td>"+data.consulta +" "+ data.valueQuery+"</td></tr>");
             }else{
-                $("#results").append("<tr><td>").append(data.idTest)
-                    .append("</td><td>"+ data.valueQuery+" "+ data.resultQ +"</td></tr>");
-            }
+                $("#results").append("<tr><td>"+data.idTest+"</td><td>"+data.consulta +" "+ data.valueQuery+" "+ data.resultQ +"</td></tr>");
+            }            
+            contarIteracionesConsulta();
        });
     }
-
+    
+    function contarIteracionesConsulta(){
+        iteracion1++;
+        if(iteracion1 >= $("#m").val()){
+            $("#typeQuery").val("");
+            $("#valueQuery").val("");
+            desactivarBoton($("#btnSendData"));
+            activarBoton($("#initMatrix"));        
+            $("#n").val("");
+            $("#m").val("");
+            $("#bloqQueries").hide();
+        }
+    }
+    function contarIteracionesTest(){
+        if(iteracion2 > $("#test")){
+            $("#typeQuery").val("");
+            $("#valueQuery").val("");
+            desactivarBoton($("#btnSendData"));
+            activarBoton($("#initMatrix"));        
+            $("#n").val("");
+            $("#m").val("");
+            $("#bloqQueries").hide();
+        }          
+        
+        iteracion2++;
+    }
+    
+    function activarBoton(selector){
+        selector.removeAttr("disabled");
+    }
+    
+    function desactivarBoton(selector){
+        selector.attr("disabled", "disabled");
+    }
 </script>
 
 @stop

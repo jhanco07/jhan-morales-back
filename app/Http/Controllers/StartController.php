@@ -24,7 +24,7 @@ class StartController extends Controller {
     public function initQuery(Request $request) {
         $matrix = new Matrix();        
         $result["valueQuery"] = $request->valueQuery;
-        if($request->valueQuery== 2) {
+        if($request->typeQuery== "2") {
             $datos = explode(" ", $request->valueQuery);
             $matrix->updateMatrix($datos[0], $datos[1], $datos[2], $datos[3]);
             $result["idTest"] = $request->idTest;
